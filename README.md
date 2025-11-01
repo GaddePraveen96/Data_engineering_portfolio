@@ -13,7 +13,7 @@ How to take a messy Scopus dump (scopus_sample.csv)
 
 Clean special/unicode/junk characters
 
-Separate authors from affiliations (Scopus loves to put them together 🙄)
+Separate authors from affiliations (Scopus loves to put them together)
 
 Normalize and extract country, city, ZIP from affiliation strings
 
