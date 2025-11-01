@@ -1,111 +1,159 @@
-# Data_engineering_portfolio
-“Demonstration of data cleaning and relational database structuring for large-scale Scientific datasets (synthetic sample).”
+# Scopus Data Cleaning & Affiliation Structuring (Demo)
 
+This repository is a **representative demo** of my work on large-scale **scientific data cleaning, structuring, and automation** at the *International Association of Advanced Materials (IAAM)*.  
 
-#Scopus Data Cleaning & Affiliation Structuring (Demo)
+While this demo uses small anonymized datasets (`~10 rows`), the **production pipeline handled over 7 million Scopus records**, processed and stored in **MySQL (AWS RDS)** using **Navicat** as the GUI.
 
-This repo is a representative demo of the data-engineering work I did at an organization i worked to clean and structure large-scale Author exports from publication databases.
-The files here use small, anonymized CSVs, but the actual pipeline was built for ~7,000,000 rows and ran on MySQL (AWS RDS) + Navicat. This version is safe to make public.
+> **Note:** All data here is synthetic and anonymized. Logic and structure are identical to the real IAAM implementation.
 
-1. What this repo shows
+---
 
-How to take a messy Scopus dump (scopus_sample.csv)
+## Project Overview
 
-Clean special/unicode/junk characters
+This project showcases the end-to-end workflow of transforming messy Scopus exports into a clean, relational database structure that can be queried, analyzed, and automated for large-scale scientific outreach.
 
-Separate authors from affiliations (Scopus loves to put them together)
+**Core operations:**
+- Clean raw Scopus data dumps (`scopus_sample.csv`)
+- Standardize author names, affiliations, and metadata
+- Extract **country, city, and ZIP** from textual affiliations
+- Structure data into MySQL-ready format (`structured_affiliation_insert.py`)
+- Compare **raw vs cleaned** datasets for audit and visualization
 
-Normalize and extract country, city, ZIP from affiliation strings
+---
 
-Prepare data for relational DB insert (structured_affiliation_insert.py)
+## Tech Stack
 
-Show a before → after comparison (Anon_Cleaned_scopus.csv)
+- **Languages:** Python (pandas, numpy, regex, mysql.connector)  
+- **Database:** MySQL (AWS RDS), managed via Navicat  
+- **Pipeline:** Python-based ETL scripts (cleaning → parsing → structuring)  
+- **Visualization:** Power BI dashboards for QA and performance metrics  
 
-2. Files and flow
-  Raw input
+---
 
-  scopus_sample.csv
-  Small sample of the original Scopus export. Columns and messiness are kept close to real Scopus (authors bunched, affiliations long, publisher strings, etc.).
+##  Pipeline Flow & File Logic
 
-#Cleaning layer
+###  Raw Input
+- **`scopus_sample.csv`**  
+  Raw, messy Scopus-style export (authors + affiliations mixed, special characters, inconsistent delimiters).
 
-Special_Characters_Cleaning_Code.py
+---
 
-First pass cleaning.
-
-Removes weird encodings, extra semicolons, non-ASCII stuff that breaks parsing.
-
-This is the “make it processable” step.
-
-authors_cleaning.py
-
-Normalizes author strings (spacing, delimiter consistency, name order).
-
-Prepares author text for the next step where we separate authors from affiliations.
-
-
-authors_seprataion_from_affiliation.py
-
-Scopus sometimes mixes authors + affiliation in the same field.
-
-This script splits those into author-level data and affiliation-level data.
-
-Output from here is more “tabular” and easier to load.
-
-Affiliations_Cleaning_Step_1.py
-
-First standardization of affiliations.
-
-Removes duplicate institute strings, trims “Dept. of…”, harmonizes separators.
-
-Goal: turn human-written affiliation strings into machine-readable segments.
-
-Affiliations_First_Country.py
-
-Looks at the affiliation string and tries to extract the country reliably.
-
-This is needed because later, in the 7M-row version, we mapped countries to outreach rules / email domains.
-
-City_ZIP_Extraction.py
-
-Pulls city / ZIP / location from the same affiliation text.
-
-Useful when building location-wise analytics or routing to country-specific campaigns.
+### Cleaning Layer
+- **`Special_Characters_Cleaning_Code.py`**  
+  Removes encoding errors, extra semicolons, and non-ASCII junk.
   
+- **`authors_cleaning.py`**  
+  Standardizes author fields — spacing, delimiters, and case formatting.
 
-structured_affiliation_insert.py
+---
 
-Takes the cleaned + parsed data and formats it for inserts into MySQL.
+### Parsing & Extraction Layer
+- **`authors_seprataion_from_affiliation.py`**  
+  Splits authors from affiliations when combined in one field (common in Scopus exports).  
 
-This is the part I used with Navicat + AWS RDS in the original IAAM system.
+- **`Affiliations_Cleaning_Step_1.py`**  
+  First-level normalization — trims, standardizes, and deduplicates affiliation text.
 
-In the real setup, this went into relational tables (authors, affiliations, countries, publishers).
+- **`Affiliations_First_Country.py`**  
+  Extracts the *first country occurrence* from each affiliation (for country-level mapping).
+
+- **`City_ZIP_Extraction.py`**  
+  Extracts *city* and *ZIP codes* for location-level insights and regional analytics.
+
+---
+
+### Structuring & Database Layer
+- **`structured_affiliation_insert.py`**  
+  Converts cleaned data into SQL insert statements and formats for MySQL import.  
+  This mimics the real IAAM setup using **AWS RDS + Navicat**.
+
+---
+
+### Outputs
+- **`Anon_Cleaned_scopus.csv`** – Cleaned, structured, and anonymized version.  
+- **`scopus_sample.csv`** – Raw messy version (for before/after comparison).
+
+---
+
+## Example Pipeline Run (Local)
+
+```bash
+# 1. Clean the raw Scopus data
+python Special_Characters_Cleaning_Code.py
+
+# 2. Normalize author fields
+python authors_cleaning.py
+
+# 3. Separate authors from affiliations
+python authors_seprataion_from_affiliation.py
+
+# 4. Clean and extract metadata from affiliations
+python Affiliations_Cleaning_Step_1.py
+python Affiliations_First_Country.py
+python City_ZIP_Extraction.py
+
+# 5. Prepare structured data for SQL insert
+python structured_affiliation_insert.py
 
 
-Outputs / demo data
+Data Processing Architecture (Mermaid Diagram)
 
-Anon_Cleaned_scopus.csv
+graph TD
+    A[Raw Scopus Export<br>(scopus_sample.csv)] --> B[ Special Character Cleaning<br>(Special_Characters_Cleaning_Code.py)]
+    B --> C[Author Normalization<br>(authors_cleaning.py)]
+    C --> D[Author–Affiliation Separation<br>(authors_seprataion_from_affiliation.py)]
+    D --> E[Affiliation Cleaning Step 1<br>(Affiliations_Cleaning_Step_1.py)]
+    E --> F[Country Extraction<br>(Affiliations_First_Country.py)]
+    F --> G[City & ZIP Extraction<br>(City_ZIP_Extraction.py)]
+    G --> H[Structured Data Insert<br>(structured_affiliation_insert.py)]
+    H --> I[Cleaned Output<br>(Anon_Cleaned_scopus.csv)]
 
-This is the cleaned version, with names anonymized.
+Relational Schema Overview (MySQL)
 
-You can show a before/after using:
-
-scopus_sample.csv → raw
-
-Anon_Cleaned_scopus.csv → structured/cleaned
+Below is the simplified entity-relationship model of the final MySQL database design.
+This schema was implemented in AWS RDS, managed through Navicat, and served as the backbone for structured analytics and automation.
 
 
+erDiagram
+    AUTHORS {
+        int author_id PK
+        string author_name
+        string author_email
+        string scopus_id
+        int affiliation_id FK
+    }
 
-Why this matters (for recruiters)
+    AFFILIATIONS {
+        int affiliation_id PK
+        string affiliation_name
+        string department
+        string city
+        string zip
+        int country_id FK
+    }
 
-This is not “just Python.” It’s data engineering for messy scientific data.
+    COUNTRY {
+        int country_id PK
+        string country_name
+        string region
+    }
 
-You can see I understand:
+    PUBLISHERS {
+        int publisher_id PK
+        string publisher_name
+    }
 
-extraction → cleaning → normalization → structuring → DB load
+    ARTICLES {
+        int article_id PK
+        string title
+        int year
+        int publisher_id FK
+        int author_id FK
+        int affiliation_id FK
+    }
 
-working with semi-structured exports (Scopus, Web of Science style)
+    AUTHORS ||--o{ ARTICLES : writes
+    AFFILIATIONS ||--o{ AUTHORS : hosts
+    COUNTRY ||--o{ AFFILIATIONS : located_in
+    PUBLISHERS ||--o{ ARTICLES : publishes
 
-building it in separate scripts so it can scale / be scheduled
-
-This is exactly what you need in pharma / regulatory / R&D orgs that run on bad Excel exports.
