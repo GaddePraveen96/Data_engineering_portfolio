@@ -1,9 +1,12 @@
 # Data_engineering_portfolio
-“Demonstration of data cleaning and relational database structuring for large-scale Scopus datasets (synthetic sample).”
+“Demonstration of data cleaning and relational database structuring for large-scale Scientific datasets (synthetic sample).”
+
+
 #Project Overview
 This repository demonstrates a representative subset of my work on large-scale scientific data cleaning, structuring, and automation performed during my time at one of the company iam working
 The uploaded datasets (Anon_Demo_scopus_like.csv and Anon_Cleaned_scopus.csv) contain synthetic 10-row and cleaned samples created solely for demonstration.
 The original system processed over 7 million scientific database records sourced from multiple scientific domains, involving complex normalization, entity resolution, and database automation.
+
 
 #Tech Stack & Tools
 Languages: Python (pandas, numpy, regex, mysql.connector)
