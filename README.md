@@ -2,7 +2,7 @@
 
 This repository is a **representative demo** of my work on large-scale **scientific data cleaning, structuring, and automation** at the *work place (cannot disclose comapny)*.  
 
-While this demo uses small anonymized datasets (`~10 rows`), the **production pipeline handled over 7 million Scopus records**, processed and stored in **MySQL (AWS RDS)** using **Navicat** as the GUI.
+While this demo uses small anonymized datasets (`~10 rows`), the **production pipeline handled over 7 million  records from scientific databases**, processed and stored in **MySQL (AWS RDS)** using **Navicat** as the GUI.
 
 > **Note:** All data here is synthetic and anonymized. Logic and structure are identical to the real work place implementation.
 
@@ -13,7 +13,7 @@ While this demo uses small anonymized datasets (`~10 rows`), the **production pi
 This project showcases the end-to-end workflow of transforming messy Scopus exports into a clean, relational database structure that can be queried, analyzed, and automated for large-scale scientific outreach.
 
 **Core operations:**
-- Clean raw Scopus data dumps (`scopus_sample.csv`)
+- Clean raw Scientific data dumps (`scopus_sample.csv`) --- Just an example
 - Standardize author names, affiliations, and metadata
 - Extract **country, city, and ZIP** from textual affiliations
 - Structure data into MySQL-ready format (`structured_affiliation_insert.py`)
