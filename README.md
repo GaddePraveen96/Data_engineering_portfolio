@@ -1,6 +1,6 @@
 # Scopus Data Cleaning & Affiliation Structuring (Demo)
 
-This repository is a **representative demo** of my work on large-scale **scientific data cleaning, structuring, and automation** at the *International Association of Advanced Materials (IAAM)*.  
+This repository is a **representative demo** of my work on large-scale **scientific data cleaning, structuring, and automation** at the *work place*.  
 
 While this demo uses small anonymized datasets (`~10 rows`), the **production pipeline handled over 7 million Scopus records**, processed and stored in **MySQL (AWS RDS)** using **Navicat** as the GUI.
 
